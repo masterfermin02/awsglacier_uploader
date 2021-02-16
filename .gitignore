@@ -1,0 +1,4 @@
+/vendor/
+/uploads/
+.DS_Store
+/.idea/
