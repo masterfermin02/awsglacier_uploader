@@ -1,5 +1,5 @@
-# awsgracier_uploader
-Script to upload all folder and subdirectory to aws s3 gracier with PHP
+# awsglacier_uploader
+Script to upload all folder and subdirectory to aws s3 glacier with PHP
 
 # How to install
 - 1 - Run composer 
