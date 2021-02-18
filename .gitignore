@@ -2,3 +2,4 @@
 /uploads/
 .DS_Store
 /.idea/
+credentials.ini
