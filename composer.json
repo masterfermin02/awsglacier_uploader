@@ -1,5 +1,12 @@
 {
     "require": {
         "aws/aws-sdk-php": "^3.173"
+    },
+    "autoload": {
+        "psr-4": {
+            "Loader\\": [
+                "src/"
+            ]
+        }
     }
 }

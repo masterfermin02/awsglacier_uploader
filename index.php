@@ -2,9 +2,10 @@
 
 // Include AWS php sdk with composer autoload
 require 'vendor/autoload.php';
+
 use Aws\Credentials\CredentialProvider;
-use Aws\S3\S3Client;
 use Aws\Glacier\GlacierClient;
+use Loader\Archive;
 
 $profile = 'default';
 $path = './credentials.ini';
@@ -22,25 +23,7 @@ $client = GlacierClient::factory(array(
 ));
 
 $dir = "/Users/intellisys/awsgracier/uploads";
+$vault = 'shakespeare-videos';
 
-function uploadArchive(string $dir, GlacierClient $s3): void
-{
-    $dir_iterator = new RecursiveDirectoryIterator($dir);
-    $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
-    $vault = 'shakespeare-videos';
-    foreach ($iterator as $file) {
-        if ($file->isFile()) {
-            $file_name = $file->getFilename() ;
-            echo "Upload File Key : " . $file_name . "\n";
-            echo "Uplad File Path : " . substr($file->getPathname(), 27) . "\n \n";
-            $result = $s3->uploadArchive([
-                'vaultName' => $vault,
-                'body' => fopen($file->getPathname(), 'r+')
-            ]);
-            $archiveId = $result->get('archiveId');
-            echo "archiveId : " . $archiveId . "\n \n";
-        }
-    }
-}
-
-uploadArchive($dir, $client);
+$archive = new Archive($dir, $vault, $client);
+$archive->upload();
