@@ -6,6 +6,7 @@ namespace Loader;
 
 use Aws\Glacier\GlacierClient;
 use Aws\Glacier\MultipartUploader;
+use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -24,11 +25,12 @@ class MultiPartUpload
 
     public function upload(): void
     {
-        $dir_iterator = new RecursiveDirectoryIterator($this->dir);
+        $dir_iterator = new RecursiveDirectoryIterator($this->dir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
 
+
         foreach ($iterator as $file) {
-            if ($file->isFile()) {
+            if ($file->isFile() && substr( $file->getFilename(), 0, 1) !== '.') {
                 $file_name = $file->getFilename() ;
                 echo "Upload File Key : " . $file_name . "\n";
                 echo "Uplad File Path : " . substr($file->getPathname(), 27) . "\n \n";
