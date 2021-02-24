@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 
 use Aws\Credentials\CredentialProvider;
 use Aws\Glacier\GlacierClient;
-use Loader\Archive;
+use Loader\MultipartUpload;
 
 $profile = 'default';
 $path = './credentials.ini';
@@ -25,5 +25,5 @@ $client = GlacierClient::factory(array(
 $dir = "/Users/intellisys/awsgracier/uploads";
 $vault = 'shakespeare-videos';
 
-$archive = new Archive($dir, $vault, $client);
+$archive = new MultipartUpload($dir, $vault, $client);
 $archive->upload();
