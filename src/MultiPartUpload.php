@@ -6,9 +6,9 @@ namespace Loader;
 
 use Aws\Glacier\GlacierClient;
 use Aws\Glacier\MultipartUploader;
-use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Exception;
 
 class MultiPartUpload
 {
@@ -34,15 +34,32 @@ class MultiPartUpload
                 $file_name = $file->getFilename() ;
                 echo "Upload File Key : " . $file_name . "\n";
                 echo "Uplad File Path : " . substr($file->getPathname(), 27) . "\n \n";
-                $archiveData = fopen($file->getPathname(), 'r');
-                $multi = new MultipartUploader($this->client, $archiveData, [
-                    'vault_name' => $this->vault
-                ]);
+                try {
+                    $archiveData = fopen($file->getPathname(), 'r');
+                    $multi = new MultipartUploader($this->client, $archiveData, [
+                        'vault_name' => $this->vault
+                    ]);
 
-                $result = $multi->upload();
-                $archiveId = $result->get('archiveId');
+                    $result = $multi->upload();
+                    /*while (!$result->getState()->isCompleted())
+                    {
+                        echo print_r($this->getState()->getUploadedParts());
+                        echo PHP_EOL;
+                        echo "Process ..." . PHP_EOL;
+                        sleep(5);
+                    }*/
+                    $archiveId = $result->get('archiveId');
 
-                fclose($archiveData);
+
+                    fclose($archiveData);
+                } catch (Exception $e) {
+                    $handle = fopen('errorLog.txt', 'a+');
+                    $log = "Message error: " . $e->getMessage() . ", file path: " . $file->getPathname() . PHP_EOL;
+                    fwrite ( $handle , $log);
+                    fclose($handle);
+
+                }
+
                 echo "archiveId : " . $archiveId . "\n \n";
             }
         }
